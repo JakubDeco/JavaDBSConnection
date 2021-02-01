@@ -31,14 +31,12 @@ public class Database {
             Connection connection = getConnection();
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setNString(1,country);
-            //System.out.println(ps.toString());
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()){
                 String name = resultSet.getString("name");
                 int population = resultSet.getInt("population");
                 cities.add(new City(name, population));
-                System.out.println(name+" "+population);
             }
 
             connection.close();
@@ -71,26 +69,34 @@ public class Database {
     }
 
     public Country getCountryInfo(String country){
-        String query = "Select country.name, country.code, city.name FROM country " +
+        //JSON_EXTRACT(doc, '$.geography.SurfaceArea') keys ARE CASE SENSITIVE!!!!
+        String query = "Select country.name, country.code, city.name, " +
+                "JSON_UNQUOTE(JSON_EXTRACT(doc, '$.geography.Continent')) AS continent, " +
+                "JSON_EXTRACT(doc, '$.geography.SurfaceArea') AS area " +
+                "FROM country " +
                 "INNER JOIN city ON country.capital=city.id " +
+                "INNER JOIN countryinfo ON country.code = countryinfo._id " +
                 "WHERE country.name LIKE ?";
+
+        Country resultCountry = null;
 
         try {
             Connection connection = getConnection();
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setNString(1,country);
-            //System.out.println(ps.toString());
             ResultSet resultSet = ps.executeQuery();
 
             if (resultSet.next()){
                 String code3=resultSet.getString("country.code");
                 String city=resultSet.getString("city.name");
-                System.out.println(code3+" "+city);
+                int area=resultSet.getInt("area");
+                String continent=resultSet.getString("continent");
+                resultCountry = new Country(country, code3, city, area, continent);
             }
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return resultCountry;
     }
 }

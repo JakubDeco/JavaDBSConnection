@@ -4,10 +4,11 @@ public class Country {
     private String name;
     private String code3;
     private String capitalCity;
-    private String area;
+    private int area;
     private String continent;
+    //todo premenna s oficialnymmi jazykmi
 
-    public Country(String name, String code3, String capitalCity, String area, String continent) {
+    public Country(String name, String code3, String capitalCity, int area, String continent) {
         this.name = name;
         this.code3 = code3;
         this.capitalCity = capitalCity;
@@ -27,7 +28,7 @@ public class Country {
         return capitalCity;
     }
 
-    public String getArea() {
+    public int getArea() {
         return area;
     }
 
