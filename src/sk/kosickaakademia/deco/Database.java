@@ -2,7 +2,6 @@ package sk.kosickaakademia.deco;
 
 import sk.kosickaakademia.deco.entity.City;
 import sk.kosickaakademia.deco.entity.Country;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,13 +69,14 @@ public class Database {
 
     public Country getCountryInfo(String country){
         //JSON_EXTRACT(doc, '$.geography.SurfaceArea') keys ARE CASE SENSITIVE!!!!
-        String query = "Select country.name, country.code, city.name, " +
+        String query = "Select country.name, country.code, city.name, language, " +
                 "JSON_UNQUOTE(JSON_EXTRACT(doc, '$.geography.Continent')) AS continent, " +
                 "JSON_EXTRACT(doc, '$.geography.SurfaceArea') AS area " +
                 "FROM country " +
                 "INNER JOIN city ON country.capital=city.id " +
                 "INNER JOIN countryinfo ON country.code = countryinfo._id " +
-                "WHERE country.name LIKE ?";
+                "INNER JOIN countrylanguage on country.Code = countrylanguage.CountryCode " +
+                "WHERE country.name LIKE ? AND countrylanguage.IsOfficial='T'";
 
         Country resultCountry = null;
 
@@ -86,13 +86,20 @@ public class Database {
             ps.setNString(1,country);
             ResultSet resultSet = ps.executeQuery();
 
-            if (resultSet.next()){
-                String code3=resultSet.getString("country.code");
-                String city=resultSet.getString("city.name");
-                int area=resultSet.getInt("area");
-                String continent=resultSet.getString("continent");
-                resultCountry = new Country(country, code3, city, area, continent);
+            String code3 = null;
+            String city = null;
+            String continent = null;
+            int area = 0;
+            List<String> languages = new ArrayList<>();
+
+            while (resultSet.next()){
+                code3=resultSet.getString("country.code");
+                city=resultSet.getString("city.name");
+                area=resultSet.getInt("area");
+                continent=resultSet.getString("continent");
+                languages.add(resultSet.getString("language"));
             }
+            resultCountry = new Country(country, code3, city, area, continent, languages);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }

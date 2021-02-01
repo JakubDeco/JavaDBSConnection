@@ -1,19 +1,23 @@
 package sk.kosickaakademia.deco.entity;
 
+import java.util.List;
+
 public class Country {
     private String name;
     private String code3;
     private String capitalCity;
     private int area;
     private String continent;
+    private List<String> languages;
     //todo premenna s oficialnymmi jazykmi
 
-    public Country(String name, String code3, String capitalCity, int area, String continent) {
+    public Country(String name, String code3, String capitalCity, int area, String continent, List<String> languages) {
         this.name = name;
         this.code3 = code3;
         this.capitalCity = capitalCity;
         this.area = area;
         this.continent = continent;
+        this.languages = languages;
     }
 
     public String getName() {
@@ -34,5 +38,9 @@ public class Country {
 
     public String getContinent() {
         return continent;
+    }
+
+    public List<String> getLanguages() {
+        return languages;
     }
 }

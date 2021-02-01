@@ -23,5 +23,13 @@ public class Output {
         System.out.println("Capital: "+country.getCapitalCity());
         System.out.println("Area: "+country.getArea());
         System.out.println("Continent: "+country.getContinent());
+
+        System.out.print("Official languages: ");
+        List<String> languages = country.getLanguages();
+        for (int i = 0; i < country.getLanguages().size(); i++) {
+            if (i != 0) System.out.print(", "+languages.get(i));
+            else System.out.print(languages.get(i));
+        }
+        System.out.println();
     }
 }
