@@ -3,13 +3,16 @@ package sk.kosickaakademia.deco;
 import java.sql.*;
 
 public class Database {
+    private String url = "";
+    private String user = "";
+    private String password = "";
+    //todo delete sensitive information
+
     public void showCities(String country){
-        String url="";
-        String user="";
-        String password="";
-        String query="select city.name, countryCode from city " +
+        String query = "select city.name, JSON_EXTRACT(info,'$.Population') as population from city " +
                 "inner join country on city.countryCode=country.code " +
-                "where country.name like ?";
+                "where country.name like ? " +
+                "order by population desc";
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -20,9 +23,9 @@ public class Database {
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()){
-                String colName=resultSet.getString("name");
-                String colCountryCode=resultSet.getString("countryCode");
-                System.out.println(colName+" "+colCountryCode);
+                String name = resultSet.getString("name");
+                int population = resultSet.getInt("population");
+                System.out.println(name+" "+population);
             }
 
             connection.close();
