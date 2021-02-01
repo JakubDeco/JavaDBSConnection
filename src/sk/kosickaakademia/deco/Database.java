@@ -1,7 +1,9 @@
 package sk.kosickaakademia.deco;
 
 import sk.kosickaakademia.deco.entity.City;
+import sk.kosickaakademia.deco.entity.Country;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
@@ -13,10 +15,12 @@ public class Database {
     private String url;
     private String user;
     private String password;
-    //todo delete sensitive information
+
+    public Database(String filepath){
+        loadConfig(filepath);
+    }
 
     public List<City> getCities(String country){
-        loadConfig("resource/config.properties");
         String query = "select city.name, JSON_EXTRACT(info,'$.Population') as population from city " +
                 "inner join country on city.countryCode=country.code " +
                 "where country.name like ? " +
@@ -24,8 +28,7 @@ public class Database {
         List<City> cities = new ArrayList<>();
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url,user,password);
+            Connection connection = getConnection();
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setNString(1,country);
             //System.out.println(ps.toString());
@@ -45,16 +48,16 @@ public class Database {
         return cities;
     }
 
+    private Connection getConnection() throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        return DriverManager.getConnection(url,user,password);
+    }
+
     private void loadConfig(String filepath){
         try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filepath);
+            InputStream inputStream = new FileInputStream(filepath);
 
             Properties properties=new Properties();
-
-            if (inputStream == null) {
-                System.out.println("Config failed to load.");
-                return;
-            }
 
             properties.load(inputStream);
 
@@ -65,5 +68,29 @@ public class Database {
             e.printStackTrace();
         }
 
+    }
+
+    public Country getCountryInfo(String country){
+        String query = "Select country.name, country.code, city.name FROM country " +
+                "INNER JOIN city ON country.capital=city.id " +
+                "WHERE country.name LIKE ?";
+
+        try {
+            Connection connection = getConnection();
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setNString(1,country);
+            //System.out.println(ps.toString());
+            ResultSet resultSet = ps.executeQuery();
+
+            if (resultSet.next()){
+                String code3=resultSet.getString("country.code");
+                String city=resultSet.getString("city.name");
+                System.out.println(code3+" "+city);
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
