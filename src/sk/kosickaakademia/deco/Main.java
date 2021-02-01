@@ -12,8 +12,8 @@ public class Main {
         Database database=new Database("resource/config.properties");
         Output output = new Output();
         List<City> cities = database.getCities("germany");
-        //output.printCities(cities);
-        Country country1 = database.getCountryInfo("Argentina");
+        output.printCities(cities);
+        Country country1 = database.getCountryInfo("Switzerland");
         output.printCountry(country1);
     }
 }
