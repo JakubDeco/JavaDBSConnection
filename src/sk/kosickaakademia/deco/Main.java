@@ -15,5 +15,9 @@ public class Main {
         output.printCities(cities);
         Country country1 = database.getCountryInfo("Switzerland");
         output.printCountry(country1);
+
+        database.getCountryCode3("slovakia");
+        City city1 = new City("Kosice",239171,"Kosicky kraj","Slovakia");
+        database.insertCity(city1);
     }
 }

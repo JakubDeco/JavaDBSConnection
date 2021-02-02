@@ -68,6 +68,7 @@ public class Database {
     }
 
     public Country getCountryInfo(String country){
+        //todo divide language select into separate query
         //JSON_EXTRACT(doc, '$.geography.SurfaceArea') keys ARE CASE SENSITIVE!!!!
         String query = "Select country.name, country.code, city.name, language, " +
                 "JSON_UNQUOTE(JSON_EXTRACT(doc, '$.geography.Continent')) AS continent, " +
@@ -100,10 +101,62 @@ public class Database {
                 languages.add(resultSet.getString("language"));
             }
             resultCountry = new Country(country, code3, city, area, continent, languages);
+
+            connection.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
 
         return resultCountry;
+    }
+
+    public String getCountryCode3(String country){
+        String code3 = null;
+        if (country == null || country.isEmpty() || country.isBlank()) {
+            return code3;
+        }
+        country = country.trim();
+
+        try {
+            Connection connection = getConnection();
+            String query="select code from country " +
+                    "where name like ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setNString(1,country);
+
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()){
+                code3 = resultSet.getString("code");
+            }
+
+            connection.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+        return code3;
+    }
+
+    public void insertCity(City city){
+        String country = city.getCountry();
+        String code3 = getCountryCode3(country);
+
+        if (code3 == null) System.out.println("Country "+country+" does not exist!");
+
+        String query = "insert into city(name, countrycode, district, info) values(?,?,?,?)";
+        try {
+            Connection connection = getConnection();
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setNString(1, city.getName());
+            ps.setNString(2, code3);
+            ps.setNString(3, city.getDistrict());
+            ps.setNString(4, "{\"Population\":"+city.getPopulation()+"}");
+
+            System.out.println(ps.executeUpdate());
+
+            connection.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
