@@ -2,6 +2,8 @@ package sk.kosickaakademia.deco;
 
 import sk.kosickaakademia.deco.entity.City;
 import sk.kosickaakademia.deco.entity.Country;
+
+import javax.xml.transform.Result;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -153,6 +155,30 @@ public class Database {
             ps.setNString(4, "{\"Population\":"+city.getPopulation()+"}");
 
             System.out.println(ps.executeUpdate());
+
+            connection.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updatePopulation(String country, String city, int population){
+        if (population <= 0) return;
+        if (country == null || country.isBlank() || country.isEmpty()) return;
+        if (city == null || city.isBlank() || city.isEmpty()) return;
+
+        try {
+            Connection connection = getConnection();
+            String query = "update city set info=? " +
+                    "where name like ? and countrycode=(select code from country " +
+                    "where name like ?)";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setNString(1,"{\"Population\":"+population+"}");
+            ps.setNString(2, city);
+            ps.setNString(3, country);
+
+            System.out.println(ps);
+            ps.executeUpdate();
 
             connection.close();
         } catch (ClassNotFoundException | SQLException e) {

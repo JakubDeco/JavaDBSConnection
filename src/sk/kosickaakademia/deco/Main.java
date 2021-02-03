@@ -10,7 +10,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         Database database=new Database("resource/config.properties");
-        Output output = new Output();
+        /*Output output = new Output();
         List<City> cities = database.getCities("germany");
         output.printCities(cities);
         Country country1 = database.getCountryInfo("Switzerland");
@@ -18,6 +18,7 @@ public class Main {
 
         database.getCountryCode3("slovakia");
         City city1 = new City("Kosice",239171,"Kosicky kraj","Slovakia");
-        database.insertCity(city1);
+        database.insertCity(city1);*/
+        database.updatePopulation("afghanistan","kabul",4273000);
     }
 }
