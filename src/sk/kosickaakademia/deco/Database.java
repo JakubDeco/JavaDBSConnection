@@ -169,16 +169,16 @@ public class Database {
 
         try {
             Connection connection = getConnection();
-            String query = "update city set info=? " +
-                    "where name like ? and countrycode=(select code from country " +
-                    "where name like ?)";
+            String query = "update city " +
+                    "inner join country on city.countryCode=country.code " +
+                    "set info=? " +
+                    "where city.name like ? and country.name like ?";
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setNString(1,"{\"Population\":"+population+"}");
             ps.setNString(2, city);
             ps.setNString(3, country);
 
-            System.out.println(ps);
-            ps.executeUpdate();
+            System.out.println(ps.executeUpdate());
 
             connection.close();
         } catch (ClassNotFoundException | SQLException e) {
