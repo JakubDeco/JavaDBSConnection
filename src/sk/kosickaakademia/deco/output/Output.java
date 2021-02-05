@@ -1,5 +1,6 @@
 package sk.kosickaakademia.deco.output;
 
+import sk.kosickaakademia.deco.entity.CapitalCity;
 import sk.kosickaakademia.deco.entity.City;
 import sk.kosickaakademia.deco.entity.Country;
 
@@ -31,5 +32,14 @@ public class Output {
             else System.out.print(languages.get(i));
         }
         System.out.println();
+    }
+
+    public void printCapitalCities(List<CapitalCity> list){
+        if (list == null || list.isEmpty())
+            return;
+        for (CapitalCity temp :
+                list) {
+            System.out.println(temp.getCountry()+"  "+temp.getName()+"  "+temp.getPopulation());
+        }
     }
 }

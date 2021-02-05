@@ -1,9 +1,9 @@
 package sk.kosickaakademia.deco;
 
+import sk.kosickaakademia.deco.entity.CapitalCity;
 import sk.kosickaakademia.deco.entity.City;
 import sk.kosickaakademia.deco.entity.Country;
 
-import javax.xml.transform.Result;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,7 +70,6 @@ public class Database {
     }
 
     public Country getCountryInfo(String country){
-        //todo divide language select into separate query
         //JSON_EXTRACT(doc, '$.geography.SurfaceArea') keys ARE CASE SENSITIVE!!!!
         String query = "Select country.name, country.code, city.name, language, " +
                 "JSON_UNQUOTE(JSON_EXTRACT(doc, '$.geography.Continent')) AS continent, " +
@@ -178,11 +177,35 @@ public class Database {
             ps.setNString(2, city);
             ps.setNString(3, country);
 
-            System.out.println(ps.executeUpdate());
+            ps.executeUpdate();
 
             connection.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<CapitalCity> getCapitalCities(String continent) {
+        if (continent == null || continent.isBlank() || continent.isEmpty())
+            return null;
+
+        List<CapitalCity> list = new ArrayList<>();
+
+        try {
+            Connection connection = getConnection();
+            String query = "select JSON_UNQUOTE(JSON_EXTRACT(countryInfo.doc, '$.Name')) as country," +
+                    " city.name," +
+                    " JSON_UNQUOTE(JSON_EXTRACT(city.info, '$.Population')) as population" +
+                    " from countryInfo" +
+                    " inner join city on city.countryCode=countryInfo._id" +
+                    " where JSON_EXTRACT(countryInfo.doc, '$.geography.Continent') like ?";
+
+            PreparedStatement ps = connection.prepareStatement(query);
+            System.out.println(ps);
+            connection.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }
