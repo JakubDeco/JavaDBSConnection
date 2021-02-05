@@ -3,6 +3,7 @@ package sk.kosickaakademia.deco;
 import sk.kosickaakademia.deco.entity.CapitalCity;
 import sk.kosickaakademia.deco.entity.City;
 import sk.kosickaakademia.deco.entity.Country;
+import sk.kosickaakademia.deco.util.Utility;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -189,19 +190,32 @@ public class Database {
         if (continent == null || continent.isBlank() || continent.isEmpty())
             return null;
 
+        continent = Utility.capitalizeWords(continent);
+
+
         List<CapitalCity> list = new ArrayList<>();
 
         try {
             Connection connection = getConnection();
-            String query = "select JSON_UNQUOTE(JSON_EXTRACT(countryInfo.doc, '$.Name')) as country," +
-                    " city.name," +
-                    " JSON_UNQUOTE(JSON_EXTRACT(city.info, '$.Population')) as population" +
-                    " from countryInfo" +
-                    " inner join city on city.countryCode=countryInfo._id" +
-                    " where JSON_EXTRACT(countryInfo.doc, '$.geography.Continent') like ?";
+            String query = "select country.name, city.name, city.info ->> '$.Population' as population" +
+                    " from country" +
+                    " inner join city on city.id = country.capital" +
+                    " inner join countryInfo on country.code=countryInfo._id" +
+                    " where countryInfo.doc ->> '$.geography.Continent' like ?";
 
             PreparedStatement ps = connection.prepareStatement(query);
-            System.out.println(ps);
+            ps.setNString(1,continent);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+                String country = rs.getNString("country.name");
+                String city = rs.getNString("city.name");
+                int population = rs.getInt("population");
+
+                list.add(new CapitalCity(country, city, population));
+            }
+
             connection.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
