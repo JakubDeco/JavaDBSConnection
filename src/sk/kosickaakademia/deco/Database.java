@@ -269,7 +269,7 @@ public class Database {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next())
-                return 1;
+                return rs.getInt("city.id");
 
             connection.close();
         } catch (ClassNotFoundException | SQLException e) {
@@ -277,5 +277,34 @@ public class Database {
         }
 
         return -1;
+    }
+
+    public boolean insertMonument(String country,String city,String name){
+
+        if (name == null || name.isBlank())
+            return false;
+
+        int id = hasCountryCity(country, city);
+        if (id == -1) {
+            return false;
+        }
+
+        int result = 0;
+        try {
+            Connection connection = getConnection();
+            String query = "insert into monument(name, city) values(?,?)";
+
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setNString(1, name);
+            ps.setInt(2, id);
+
+            result = ps.executeUpdate();
+
+            connection.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result != 0;
     }
 }

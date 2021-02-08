@@ -21,6 +21,7 @@ public class Main {
         database.insertCity(city1);
         database.updatePopulation("afghanistan","kabul",4273001);
         output.printCapitalCities(database.getCapitalCities("north america"));*/
-        output.printMonuments(database.getMonuments());
+        //output.printMonuments(database.getMonuments());
+        System.out.println(database.hasCountryCity("france","paris"));
     }
 }
