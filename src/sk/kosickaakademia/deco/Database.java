@@ -3,6 +3,7 @@ package sk.kosickaakademia.deco;
 import sk.kosickaakademia.deco.entity.CapitalCity;
 import sk.kosickaakademia.deco.entity.City;
 import sk.kosickaakademia.deco.entity.Country;
+import sk.kosickaakademia.deco.entity.Monument;
 import sk.kosickaakademia.deco.util.Utility;
 
 import java.io.FileInputStream;
@@ -220,6 +221,35 @@ public class Database {
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
+        return list;
+    }
+
+    public List<Monument> getMonuments(){
+        List<Monument> list = new ArrayList<>();
+        try {
+            Connection connection = getConnection();
+            String query = "select monument.id, country.name, city.name, monument.name from monument" +
+                    " inner join city on monument.city=city.id" +
+                    " inner join country on city.countryCode=country.code";
+
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+                String country = rs.getNString("country.name");
+                String city = rs.getNString("city.name");
+                String name = rs.getNString("monument.name");
+                int id = rs.getInt("monument.id");
+
+                list.add(new Monument(country,city,name,id));
+            }
+
+            connection.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+
         return list;
     }
 }
