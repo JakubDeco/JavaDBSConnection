@@ -3,6 +3,7 @@ package sk.kosickaakademia.deco.output;
 import sk.kosickaakademia.deco.entity.CapitalCity;
 import sk.kosickaakademia.deco.entity.City;
 import sk.kosickaakademia.deco.entity.Country;
+import sk.kosickaakademia.deco.entity.Monument;
 
 import java.util.List;
 
@@ -40,6 +41,16 @@ public class Output {
         for (CapitalCity temp :
                 list) {
             System.out.println(temp.getCountry()+"  "+temp.getName()+"  "+temp.getPopulation());
+        }
+    }
+
+    public void printMonuments(List<Monument> list){
+        if (list == null || list.isEmpty())
+            return;
+
+        for (Monument temp :
+                list) {
+            System.out.println(temp.getCity()+"  "+temp.getCountry()+"  "+temp.getName()+"  id:"+temp.getId());
         }
     }
 }
