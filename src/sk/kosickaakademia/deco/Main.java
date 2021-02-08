@@ -19,7 +19,8 @@ public class Main {
         database.getCountryCode3("slovakia");
         City city1 = new City("Kosice",239171,"Kosicky kraj","Slovakia");
         database.insertCity(city1);
-        database.updatePopulation("afghanistan","kabul",4273001);*/
-        output.printCapitalCities(database.getCapitalCities("north america"));
+        database.updatePopulation("afghanistan","kabul",4273001);
+        output.printCapitalCities(database.getCapitalCities("north america"));*/
+        output.printMonuments(database.getMonuments());
     }
 }

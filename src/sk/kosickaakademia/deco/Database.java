@@ -236,9 +236,9 @@ public class Database {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()){
-                String country = rs.getNString("country.name");
-                String city = rs.getNString("city.name");
-                String name = rs.getNString("monument.name");
+                String country = rs.getString("country.name");
+                String city = rs.getString("city.name");
+                String name = rs.getString("monument.name");
                 int id = rs.getInt("monument.id");
 
                 list.add(new Monument(country,city,name,id));
