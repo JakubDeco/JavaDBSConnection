@@ -252,4 +252,30 @@ public class Database {
 
         return list;
     }
+
+    public int hasCountryCity(String country, String city){
+        if (country == null || country.isBlank() || city == null || city.isBlank())
+            return -1;
+        try {
+            Connection connection = getConnection();
+            String query = "select city.id from city" +
+                    " inner join country on city.countryCode=country.code" +
+                    " where city.name like ? and country.name like ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+
+            ps.setNString(1,city);
+            ps.setNString(2,country);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next())
+                return 1;
+
+            connection.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
 }
