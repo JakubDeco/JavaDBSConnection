@@ -9,7 +9,6 @@ import java.util.List;
 public class Server {
     public String getMonuments(){
         List<Monument> list = new Database("resource/config.properties").getMonuments();
-        String resultJSON = "";
 
         if (list.isEmpty())
             return "{}";
