@@ -6,7 +6,9 @@ import org.json.simple.parser.ParseException;
 import sk.kosickaakademia.deco.Database;
 import sk.kosickaakademia.deco.entity.Monument;
 
+import java.io.*;
 import java.util.List;
+import java.util.Scanner;
 
 public class Server {
     public String getMonuments(){
@@ -41,7 +43,7 @@ public class Server {
             return false;
 
         JSONParser parser = new JSONParser();
-        JSONObject jsonObject = null;
+        JSONObject jsonObject;
         try {
             jsonObject = (JSONObject) parser.parse(jsonStr);
         } catch (ParseException e) {
@@ -56,5 +58,23 @@ public class Server {
         Database database = new Database("resource/config.properties");
 
         return database.insertMonument(country,city,name);
+    }
+
+    public String jsonFileToString(String filePath){
+        StringBuilder result = new StringBuilder();
+        if (filePath == null || filePath.isBlank())
+            return result.toString();
+
+        Scanner scanner;
+        try {
+            scanner = new Scanner(new File(filePath));
+
+        while (scanner.hasNextLine())
+            result.append(scanner.nextLine());
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return result.toString();
     }
 }

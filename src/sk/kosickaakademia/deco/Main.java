@@ -26,8 +26,9 @@ public class Main {
         output.printMonuments(database.getMonuments());
         System.out.println(database.hasCountryCity("france","paris"));
         System.out.println(database.insertMonument("slovakia", "kosice", "St. Urban's Tower"));
-        System.out.println(server.getMonuments());*/
         System.out.println(server.insertMonument("{\"country\":\"Australia" +
-                "\",\"city\":\"Sydney\",\"name\":\"Sydney Opera House\"}"));
+                "\",\"city\":\"Sydney\",\"name\":\"Sydney Opera House\"}"));*/
+        //System.out.println(server.insertMonument("resource/SydneyOperaHouse.json"));
+        System.out.println(server.getMonuments());
     }
 }
