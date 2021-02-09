@@ -25,7 +25,9 @@ public class Main {
         output.printCapitalCities(database.getCapitalCities("north america"));
         output.printMonuments(database.getMonuments());
         System.out.println(database.hasCountryCity("france","paris"));
-        System.out.println(database.insertMonument("slovakia", "kosice", "St. Urban's Tower"));*/
-        System.out.println(server.getMonuments());
+        System.out.println(database.insertMonument("slovakia", "kosice", "St. Urban's Tower"));
+        System.out.println(server.getMonuments());*/
+        System.out.println(server.insertMonument("{\"country\":\"Australia" +
+                "\",\"city\":\"Sydney\",\"name\":\"Sydney Opera House\"}"));
     }
 }
